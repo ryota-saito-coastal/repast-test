@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<scenario id="test250930"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <model.initializer class="test250930.HelloBuilder"/>
+<?xml version="1.0" encoding="UTF-8" ?>
+<scenario simphonyVersion="2.11.0">
+<model.initializer class="test250930.HelloBuilder"/>
 </scenario>
