@@ -1,6 +1,6 @@
 package test250930;
 
-import java.nio.file.Path;
+import java.io.File;
 
 import repast.simphony.runtime.RepastMain;
 
@@ -19,7 +19,8 @@ public class PortSimulationMain {
             return;
         }
 
-        String scenario = Path.of(DEFAULT_SCENARIO_PATH).toAbsolutePath().toString();
+        File scenarioPath = new File(DEFAULT_SCENARIO_PATH).getAbsoluteFile();
+        String scenario = scenarioPath.getPath();
         RepastMain.main(new String[] { "-scenario", scenario });
     }
 }
