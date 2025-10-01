@@ -1,0 +1,142 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{fowtdoc}[2024/07/06 FOWT manual common style]
+
+\RequirePackage[dvipdfmx]{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{amsmath}
+\RequirePackage{msc}
+\RequirePackage{bm}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{fontawesome5}
+\RequirePackage[top=25mm,bottom=25mm,left=20mm,right=20mm]{geometry}
+\RequirePackage[dvipdfmx,colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue]{hyperref}
+\RequirePackage{pxjahyper}
+\RequirePackage{amssymb}
+\RequirePackage{pgfplots}
+
+\definecolor{codebg}{RGB}{245,245,245}
+\definecolor{keyword}{RGB}{40,40,160}
+\definecolor{comment}{RGB}{120,120,120}
+\definecolor{string}{RGB}{0,120,40}
+\definecolor{pybg}{RGB}{250,240,240}
+\definecolor{jsonbg}{RGB}{240,250,240}
+\definecolor{cmdbg}{RGB}{240,240,250}
+
+\lstdefinestyle{cppstyle}{
+  language=C++,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{keyword}\bfseries,
+  commentstyle=\color{comment}\itshape,
+  stringstyle=\color{string},
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  breaklines=true,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  framerule=0.3pt
+}
+
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{keyword}\bfseries,
+  commentstyle=\color{comment}\itshape,
+  stringstyle=\color{string},
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  breaklines=true,
+  backgroundcolor=\color{pybg},
+  frame=single,
+  framerule=0.3pt
+}
+
+\lstdefinestyle{jsonstyle}{
+  basicstyle=\ttfamily\footnotesize,
+  numbers=left,
+  numberstyle=\scriptsize\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  showstringspaces=false,
+  breaklines=true,
+  backgroundcolor=\color{jsonbg},
+  frame=single,
+  framerule=0.3pt
+}
+
+\lstdefinestyle{cmdstyle}{
+  basicstyle=\ttfamily\footnotesize,
+  showstringspaces=false,
+  breaklines=true,
+  backgroundcolor=\color{cmdbg},
+  frame=single,
+  framerule=0.3pt
+}
+
+\lstnewenvironment{cppcode}[1][]{\lstset{style=cppstyle,#1}}{}
+\lstnewenvironment{pythoncode}[1][]{\lstset{style=pythonstyle,#1}}{}
+\lstnewenvironment{jsoncode}[1][]{\lstset{style=jsonstyle,#1}}{}
+\lstnewenvironment{cmdcode}[1][]{\lstset{style=cmdstyle,#1}}{}
+
+\lstset{style=cppstyle, aboveskip=.7\baselineskip, belowskip=.7\baselineskip}
+
+\makeatletter
+\renewcommand{\paragraph}[1]{%
+  \par\vspace{1.0ex}%
+  {\noindent\textbf{■~#1}}\par\nobreak\vspace{0.5ex}%
+}
+\makeatother
+
+\let\oldsection\section
+\renewcommand{\section}{\clearpage\oldsection}
+
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{\small 浮体式洋上風力施工プロセスモデル}
+\fancyhead[C]{\small \nouppercase{\rightmark}}
+\fancyhead[R]{\small \nouppercase{\leftmark}}
+\fancyfoot[C]{\thepage}
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\newcommand{\fowtcover}[3]{%
+  \pagenumbering{gobble}%
+  \begin{titlepage}%
+    \thispagestyle{empty}%
+    %--- 上部 ---
+    \noindent\hfill\small\itshape
+    \makebox[0pt][r]{\rule[0.5ex]{\textwidth}{0.4pt}}\\[-0.8em]
+    Work in progress – Mind the waves.\par
+    \vfill
+    %--- タイトル ---
+    \begin{center}%
+      {\Huge\bfseries #1\if\relax\detokenize{#2}\relax\else\\[0.5em]#2\fi\par}%
+      \vfill
+      {\large #3\par}%
+      \vfill
+      {\large \normalfont\today\par}%
+    \end{center}%
+    \vfill
+    %--- 下部 ---
+    \noindent\hfill\small\itshape
+    \makebox[0pt][r]{\rule[0.5ex]{\textwidth}{0.4pt}}\\[-0.8em]
+    Proprietary document. Unauthorized distribution prohibited.\par
+  \end{titlepage}%
+}
+
+\usetikzlibrary{positioning,matrix,arrows.meta}
