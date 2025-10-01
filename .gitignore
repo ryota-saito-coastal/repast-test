@@ -9,7 +9,7 @@ bin/*
 .settings/
 
 # Logs and temporary files
-*.log
+*.log*
 
 # macOS
 .DS_Store
