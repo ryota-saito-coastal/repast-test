@@ -1,0 +1,22 @@
+# Build artifacts
+bin/*
+!bin/.gitkeep
+*.class
+
+# IDE configuration
+.classpath
+.project
+.settings/
+
+# Logs and temporary files
+*.log
+
+# macOS
+.DS_Store
+
+# TeX build outputs
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
