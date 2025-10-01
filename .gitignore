@@ -3,6 +3,10 @@ bin/*
 !bin/.gitkeep
 *.class
 
+# Repast runtime cache
+lib/
+
+
 # IDE configuration
 .classpath
 .project
