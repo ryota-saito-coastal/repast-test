@@ -44,7 +44,16 @@ for plugin in "${TARGET_DIR}"/*.jar; do
 done
 
 echo "Generating classpath metadata..." >&2
-python3 - "$REPO_ROOT" "$TARGET_DIR" <<'PY'
+
+# Use python3 if available, otherwise fallback to python
+PYTHON_CMD=$(command -v python3 || command -v python)
+
+if [[ -z "$PYTHON_CMD" ]]; then
+  echo "Error: Python is not installed." >&2
+  exit 1
+fi
+
+"$PYTHON_CMD" - "$REPO_ROOT" "$TARGET_DIR" <<'PY'
 import sys
 from pathlib import Path
 repo_root = Path(sys.argv[1])
