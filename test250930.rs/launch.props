@@ -4,3 +4,5 @@ incoming=tcp\://127.0.0.1\:5555
 outgoing=tcp\://127.0.0.1\:5556
 scenario=..\\test250930.rs
 working.directory=../
+logging.outputs=console,file,csv,json
+logging.directory=logs

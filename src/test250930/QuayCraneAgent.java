@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Queue;
 
 import repast.simphony.engine.schedule.ScheduledMethod;
+import test250930.logging.SimLogger;
 
 public class QuayCraneAgent {
 
@@ -28,15 +29,17 @@ public class QuayCraneAgent {
     public void enqueueUnload(VesselAgent vessel, Material material) {
         int handling = HANDLING_TIMES.getOrDefault(material.getType(), 2);
         taskQueue.offer(new CraneTask(vessel, material, handling));
-        System.out.printf("[Crane %d] Queued unloading of %s from Vessel %d%n", id, material.getId(), vessel.getId());
+        SimLogger.event("Crane " + id, "queued unloading",
+                material.getId() + " from vessel " + vessel.getId());
     }
 
     @ScheduledMethod(start = 1, interval = 1)
     public void step() {
+        long currentTick = SimLogger.currentTick();
         if (currentTask == null && !taskQueue.isEmpty()) {
             currentTask = taskQueue.poll();
-            System.out.printf("[Crane %d] Started unloading %s from Vessel %d%n", id,
-                    currentTask.getMaterial().getId(), currentTask.getVessel().getId());
+            SimLogger.event(currentTick, "Crane " + id, "started unloading",
+                    currentTask.getMaterial().getId() + " from vessel " + currentTask.getVessel().getId());
         }
         if (currentTask != null) {
             currentTask.workOneTick();
@@ -45,7 +48,7 @@ public class QuayCraneAgent {
                 material.setState(MaterialState.ON_QUAY);
                 yard.receiveMaterial(material, "crane " + id);
                 currentTask.getVessel().notifyMaterialUnloaded(material);
-                System.out.printf("[Crane %d] Completed unloading %s%n", id, material.getId());
+                SimLogger.event(currentTick, "Crane " + id, "completed unloading", material.getId());
                 currentTask = null;
             }
         }

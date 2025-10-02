@@ -7,6 +7,7 @@ import java.util.Queue;
 
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import test250930.logging.SimLogger;
 
 public class VesselAgent {
 
@@ -33,14 +34,16 @@ public class VesselAgent {
         int currentTick = (int) Math.floor(RunEnvironment.getInstance().getCurrentSchedule().getTickCount());
         if (status == VesselStatus.AT_SEA && currentTick >= arrivalTick) {
             status = VesselStatus.AT_QUAY;
-            System.out.printf("[Vessel %d] Arrived at tick %d with %d cargo items%n", id, currentTick, cargoQueue.size());
+            SimLogger.event(currentTick, "Vessel " + id, "arrived",
+                    "cargo=" + cargoQueue.size());
         }
         if (status == VesselStatus.AT_QUAY || status == VesselStatus.UNLOADING) {
             requestNextUnload();
             if (cargoQueue.isEmpty() && unloading.isEmpty()) {
                 if (status != VesselStatus.COMPLETED) {
                     status = VesselStatus.COMPLETED;
-                    System.out.printf("[Vessel %d] Completed unloading and ready to depart%n", id);
+                    SimLogger.event(currentTick, "Vessel " + id, "ready to depart",
+                            "all cargo unloaded");
                 }
             }
         }
@@ -64,6 +67,7 @@ public class VesselAgent {
             return;
         }
         cargoQueue.poll();
+        SimLogger.event("Vessel " + id, "material unloaded", material.getId());
         if (!cargoQueue.isEmpty()) {
             status = VesselStatus.AT_QUAY;
         }
