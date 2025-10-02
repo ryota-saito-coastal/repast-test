@@ -14,6 +14,7 @@ lib/
 
 # Logs and temporary files
 *.log*
+test250930.rs/logs/
 
 # macOS
 .DS_Store

@@ -31,12 +31,12 @@ CLASSPATH=$(./scripts/repast_classpath.sh)
 ## 2. Compile the model code
 
 Once the runtime is in place the sources can be compiled against it. The commands
-below recompile the `src/test250930` package into the existing `bin/test250930`
+below recompile the `src/test250930` package into the existing `bin`
 output directory:
 
 ```bash
 find src/test250930 -name "*.java" -print0 \
-  | xargs -0 javac -cp "$CLASSPATH" -d bin/test250930
+  | xargs -0 javac -cp "$CLASSPATH" -d bin
 ```
 
 The compiler will emit a warning about annotation processors being discovered on
@@ -49,9 +49,16 @@ in the container. Use the batch runner instead. Passing the absolute path to the
 scenario directory is important because the bundled `user_path.xml` uses relative
 entries such as `../bin` and `../lib`.
 
+Repast Simphony 2.11 ships with a parameter sweeper that drives batch runs. The
+included `test250930.rs/batch_params.xml` file requests a single iteration and is
+referenced via the `-params` flag.
+
 ```bash
-java -cp "bin/test250930:$CLASSPATH" \
-  repast.simphony.batch.BatchMain "$(pwd)/test250930.rs"
+java --add-opens java.base/java.lang=ALL-UNNAMED \
+  -cp "bin:$CLASSPATH" \
+  repast.simphony.runtime.RepastBatchMain \
+  -params "$(pwd)/test250930.rs/batch_params.xml" \
+  "$(pwd)/test250930.rs"
 ```
 
 This will load `test250930.rs/scenario.xml`, initialise the context defined in
