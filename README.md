@@ -11,6 +11,9 @@ for downstream tooling.
 java -cp "bin;${CLASSPATH_WIN}" repast.simphony.batch.BatchMain "$(pwd -W)/test250930.rs"
 ```
 
+セットアップから再コンパイル、Linux / Windows 向けのバッチ実行コマンドまでを日本語で
+詳しくまとめた手順書は [`docs/runtime_setup_ja.md`](docs/runtime_setup_ja.md) を参照。
+
 During execution the logger writes directly to `System.out`, so messages become visible even
 under batch mode.
 
