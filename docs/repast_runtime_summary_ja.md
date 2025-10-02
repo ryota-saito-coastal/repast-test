@@ -59,13 +59,13 @@ $env:CLASSPATH_WIN = (Get-Content .\lib\repast-2.11.0\classpath.txt | Where-Obje
 
 ```bash
 find src/test250930 -name "*.java" -print0 \
-  | xargs -0 javac -cp "${CLASSPATH}" -d bin/test250930
+  | xargs -0 javac -cp "${CLASSPATH}" -d bin
 ```
 
 - `find ... -print0` はファイル名にスペースが含まれても安全に処理できるよう終端を NUL 文字に
   しています。
 - `xargs -0` が `find` の出力を受け取り、`javac` にまとめて渡します。
-- `-cp "${CLASSPATH}"` で先ほど生成した Repast 依存のクラスパスを指定し、`-d bin/test250930` で
+- `-cp "${CLASSPATH}"` で先ほど生成した Repast 依存のクラスパスを指定し、`-d bin` で
   バイトコードの出力先を既存の `bin` ディレクトリに揃えます。
 
 Windows 環境であれば `Get-ChildItem` などを組み合わせても構いませんが、WSL や Git Bash を使用
@@ -78,16 +78,26 @@ Windows 環境であれば `Get-ChildItem` などを組み合わせても構い�
 
 ### 5.1 Linux / macOS
 
+`test250930.rs/batch_params.xml` には単一実行を指示するパラメータスイープが定義されています。
+バッチランナーを呼ぶ際は `-params` オプションでこのファイルを渡し、JDK17 以降で必須となる
+`--add-opens` オプションも併せて指定します。
+
 ```bash
-java -cp "bin/test250930:${CLASSPATH}" \
-  repast.simphony.batch.BatchMain "$(pwd)/test250930.rs"
+java --add-opens java.base/java.lang=ALL-UNNAMED \
+  -cp "bin:${CLASSPATH}" \
+  repast.simphony.runtime.RepastBatchMain \
+  -params "$(pwd)/test250930.rs/batch_params.xml" \
+  "$(pwd)/test250930.rs"
 ```
 
 ### 5.2 Windows（ユーザー指定コマンド）
 
 ```powershell
-java -cp "bin;${env:CLASSPATH_WIN}" `
-  repast.simphony.runtime.RepastBatchMain "$(Get-Location)\test250930.rs"
+java --add-opens java.base/java.lang=ALL-UNNAMED `
+  -cp "bin;${env:CLASSPATH_WIN}" `
+  repast.simphony.runtime.RepastBatchMain `
+  -params "$(Get-Location)\test250930.rs\batch_params.xml" `
+  "$(Get-Location)\test250930.rs"
 ```
 
 `RepastBatchMain` は `BatchMain` と同様に GUI を起動せず、`launch.props` の設定を参照して
@@ -105,12 +115,18 @@ java -cp "bin;${env:CLASSPATH_WIN}" `
 
 ```bash
 # ✅ 正しい例（Git Bash / MINGW64）
-java -cp "bin;${CLASSPATH_WIN}" \
-  repast.simphony.runtime.RepastBatchMain "$(pwd -W)\\test250930.rs"
+java --add-opens java.base/java.lang=ALL-UNNAMED \
+  -cp "bin;${CLASSPATH_WIN}" \
+  repast.simphony.runtime.RepastBatchMain \
+  -params "$(pwd -W)\\test250930.rs\\batch_params.xml" \
+  "$(pwd -W)\\test250930.rs"
 
-# ❌ 誤った例
-java -cp "bin;${CLASSPATH_WIN}" \
-  repast.simphony.runtime.RepastBatchMain ./test250930.rs/scenario.xml
+# ❌ 誤った例（scenario.xml を直接指定してしまうケース）
+java --add-opens java.base/java.lang=ALL-UNNAMED \
+  -cp "bin;${CLASSPATH_WIN}" \
+  repast.simphony.runtime.RepastBatchMain \
+  -params "$(pwd -W)\\test250930.rs\\batch_params.xml" \
+  ./test250930.rs/scenario.xml
 ```
 
 ### 6.2 `unknown plug-in ID - saf.core.runtime`

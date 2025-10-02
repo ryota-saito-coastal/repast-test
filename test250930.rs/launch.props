@@ -2,7 +2,7 @@
 #Wed Oct 01 09:36:00 JST 2025
 incoming=tcp\://127.0.0.1\:5555
 outgoing=tcp\://127.0.0.1\:5556
-scenario=..\\test250930.rs
+scenario=../test250930.rs
 working.directory=../
 logging.outputs=console,file,csv,json
 logging.directory=logs

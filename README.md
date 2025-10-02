@@ -8,11 +8,16 @@ for downstream tooling.
 ## Running the simulation
 
 ```bash
-java -cp "bin;${CLASSPATH_WIN}" repast.simphony.batch.BatchMain "$(pwd -W)/test250930.rs"
+java --add-opens java.base/java.lang=ALL-UNNAMED \
+  -cp "bin;${CLASSPATH_WIN}" \
+  repast.simphony.runtime.RepastBatchMain \
+  -params "$(pwd -W)\\test250930.rs\\batch_params.xml" \
+  "$(pwd -W)\\test250930.rs"
 ```
 
-During execution the logger writes directly to `System.out`, so messages become visible even
-under batch mode.
+The accompanying `test250930.rs/batch_params.xml` sweeper requests a single run and is required
+when invoking the batch launcher. During execution the logger writes directly to `System.out`, so
+messages become visible even under batch mode.
 
 ## Configuring log outputs
 
