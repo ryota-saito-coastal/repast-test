@@ -1,0 +1,6 @@
+[PortBuilder] Initialising offshore port context
+[Tick 1] ArrivalScheduler - processing arrivals (pending=2)
+[Tick 2] Vessel 101 - arrived (cargo=4)
+[Tick 2] Crane 1 - started unloading (NACELLE-001 from vessel 101)
+[Tick 3] Yard 1 - stored (type=NACELLE, id=NACELLE-001, source=crane 1, count=1)
+[Tick 6] Yard 1 - inventory report (BLADE=2; NACELLE=1; TOWER=2)
