@@ -5,7 +5,5 @@
       context="test250930"
       file="repast.simphony.dataLoader.engine.ClassNameDataLoaderAction_0.xml" />
 
-  <!-- （あってもなくてもよい）ModelInitializer を使う場合は下もOK
-  <model.initializer class="test250930.PortBuilder"/>
-  -->
+  <userPathFile>./test250930.rs/user_path.xml</userPathFile>
 </Scenario>
