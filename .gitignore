@@ -6,7 +6,6 @@ bin/*
 # Repast runtime cache
 lib/
 
-
 # IDE configuration
 .classpath
 .project
@@ -14,6 +13,7 @@ lib/
 
 # Logs and temporary files
 *.log*
+logs/
 
 # macOS
 .DS_Store

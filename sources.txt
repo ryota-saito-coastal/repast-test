@@ -7,6 +7,7 @@ src/test250930/PortArrivalScheduler.java
 src/test250930/PortBuilder.java
 src/test250930/PortSimulationMain.java
 src/test250930/QuayCraneAgent.java
+src/test250930/SimLogger.java
 src/test250930/VesselAgent.java
 src/test250930/VesselArrival.java
 src/test250930/VesselStatus.java

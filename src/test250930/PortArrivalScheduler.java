@@ -21,22 +21,27 @@ public class PortArrivalScheduler {
 
     public void registerArrival(VesselArrival arrival) {
         pendingArrivals.offer(arrival);
-        System.out.printf("[ArrivalScheduler] Queued Vessel %d for tick %d%n",
-                arrival.getVesselId(), arrival.getArrivalTick());
+        SimLogger.info(String.format("[ArrivalScheduler] Queued Vessel %d for tick %d",
+                arrival.getVesselId(), arrival.getArrivalTick()));
+        SimLogger.event(0, "ArrivalScheduler",
+                "arrival_registered",
+                String.format("vessel=%d arrivalTick=%d", arrival.getVesselId(), arrival.getArrivalTick()));
     }
 
     @ScheduledMethod(start = 1, interval = 1)
     public void step() {
         int currentTick = (int) Math.floor(RunEnvironment.getInstance().getCurrentSchedule().getTickCount());
-        System.out.printf("[ArrivalScheduler] Tick %d processing %d pending arrivals%n", currentTick,
-                pendingArrivals.size());
+        SimLogger.event(currentTick, "ArrivalScheduler", "process_pending",
+                String.format("queueSize=%d", pendingArrivals.size()));
         while (!pendingArrivals.isEmpty() && pendingArrivals.peek().getArrivalTick() <= currentTick) {
             VesselArrival arrival = pendingArrivals.poll();
             VesselAgent vessel = new VesselAgent(arrival.getVesselId(), arrival.getArrivalTick(),
                     arrival.instantiateCargo(MaterialState.ON_VESSEL), crane);
             context.add(vessel);
-            System.out.printf("[ArrivalScheduler] Registered Vessel %d for arrival tick %d%n",
-                    arrival.getVesselId(), arrival.getArrivalTick());
+            SimLogger.info(String.format("[ArrivalScheduler] Registered Vessel %d for arrival tick %d",
+                    arrival.getVesselId(), arrival.getArrivalTick()));
+            SimLogger.event(currentTick, "ArrivalScheduler", "spawn_vessel",
+                    String.format("vessel=%d arrivalTick=%d", arrival.getVesselId(), arrival.getArrivalTick()));
         }
     }
 }

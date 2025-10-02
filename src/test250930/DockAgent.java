@@ -3,6 +3,7 @@ package test250930;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 
 public class DockAgent {
@@ -18,7 +19,8 @@ public class DockAgent {
 
     public void scheduleTow(Material foundation) {
         towQueue.offer(foundation);
-        System.out.printf("[Dock %d] Scheduled towing for %s%n", id, foundation.getId());
+        SimLogger.info(String.format("[Dock %d] Scheduled towing for %s", id, foundation.getId()));
+        SimLogger.event(0, "Dock-" + id, "tow_scheduled", "material=" + foundation.getId());
     }
 
     @ScheduledMethod(start = 2, interval = 3)
@@ -28,7 +30,8 @@ public class DockAgent {
         }
         Material foundation = towQueue.poll();
         foundation.setState(MaterialState.ON_QUAY);
-        System.out.printf("[Dock %d] Delivered %s to quay%n", id, foundation.getId());
+        int currentTick = (int) Math.floor(RunEnvironment.getInstance().getCurrentSchedule().getTickCount());
+        SimLogger.event(currentTick, "Dock-" + id, "towed_to_quay", "material=" + foundation.getId());
         yard.receiveMaterial(foundation, "dock " + id);
     }
 }

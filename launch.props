@@ -1,0 +1,3 @@
+# Comma separated list of enabled logging outputs.
+# Valid entries: console, file, csv, json
+sim.logger.outputs=console,file,csv,json

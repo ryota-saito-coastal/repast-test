@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Queue;
 
+import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduledMethod;
 
 public class QuayCraneAgent {
@@ -28,15 +29,18 @@ public class QuayCraneAgent {
     public void enqueueUnload(VesselAgent vessel, Material material) {
         int handling = HANDLING_TIMES.getOrDefault(material.getType(), 2);
         taskQueue.offer(new CraneTask(vessel, material, handling));
-        System.out.printf("[Crane %d] Queued unloading of %s from Vessel %d%n", id, material.getId(), vessel.getId());
+        int currentTick = (int) Math.floor(RunEnvironment.getInstance().getCurrentSchedule().getTickCount());
+        SimLogger.event(currentTick, "Crane-" + id, "queue_unload",
+                String.format("material=%s vessel=%d", material.getId(), vessel.getId()));
     }
 
     @ScheduledMethod(start = 1, interval = 1)
     public void step() {
         if (currentTask == null && !taskQueue.isEmpty()) {
             currentTask = taskQueue.poll();
-            System.out.printf("[Crane %d] Started unloading %s from Vessel %d%n", id,
-                    currentTask.getMaterial().getId(), currentTask.getVessel().getId());
+            int currentTick = (int) Math.floor(RunEnvironment.getInstance().getCurrentSchedule().getTickCount());
+            SimLogger.event(currentTick, "Crane-" + id, "start_unload",
+                    String.format("material=%s vessel=%d", currentTask.getMaterial().getId(), currentTask.getVessel().getId()));
         }
         if (currentTask != null) {
             currentTask.workOneTick();
@@ -45,7 +49,9 @@ public class QuayCraneAgent {
                 material.setState(MaterialState.ON_QUAY);
                 yard.receiveMaterial(material, "crane " + id);
                 currentTask.getVessel().notifyMaterialUnloaded(material);
-                System.out.printf("[Crane %d] Completed unloading %s%n", id, material.getId());
+                int currentTick = (int) Math.floor(RunEnvironment.getInstance().getCurrentSchedule().getTickCount());
+                SimLogger.event(currentTick, "Crane-" + id, "complete_unload",
+                        String.format("material=%s vessel=%d", material.getId(), currentTask.getVessel().getId()));
                 currentTask = null;
             }
         }
