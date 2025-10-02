@@ -6,6 +6,7 @@ import java.util.List;
 import repast.simphony.context.Context;
 import repast.simphony.context.DefaultContext;
 import repast.simphony.dataLoader.ContextBuilder;
+import repast.simphony.engine.environment.RunEnvironment;
 
 public class PortBuilder implements ContextBuilder<Object> {
 
@@ -19,6 +20,8 @@ public class PortBuilder implements ContextBuilder<Object> {
         QuayCraneAgent crane = new QuayCraneAgent(1, yard);
         DockAgent dock = new DockAgent(1, yard);
         PortArrivalScheduler arrivalScheduler = new PortArrivalScheduler(context, crane);
+
+        System.out.println("[PortBuilder] Initialising offshore port context");
 
         context.add(yard);
         context.add(crane);
@@ -41,10 +44,17 @@ public class PortBuilder implements ContextBuilder<Object> {
             arrivalScheduler.registerArrival(arrival);
         }
 
+        System.out.printf("[PortBuilder] Registered %d vessel arrivals%n", arrivals.size());
+
         Material foundation1 = Material.create(MaterialType.FOUNDATION, MaterialState.IN_TRANSIT);
         Material foundation2 = Material.create(MaterialType.FOUNDATION, MaterialState.IN_TRANSIT);
         dock.scheduleTow(foundation1);
         dock.scheduleTow(foundation2);
+
+        System.out.println("[PortBuilder] Scheduled initial foundation towing jobs");
+
+        RunEnvironment.getInstance().endAt(30);
+        System.out.println("[PortBuilder] Simulation will run until tick 30");
 
         return context;
     }

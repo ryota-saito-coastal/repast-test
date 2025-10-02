@@ -21,11 +21,15 @@ public class PortArrivalScheduler {
 
     public void registerArrival(VesselArrival arrival) {
         pendingArrivals.offer(arrival);
+        System.out.printf("[ArrivalScheduler] Queued Vessel %d for tick %d%n",
+                arrival.getVesselId(), arrival.getArrivalTick());
     }
 
     @ScheduledMethod(start = 1, interval = 1)
     public void step() {
         int currentTick = (int) Math.floor(RunEnvironment.getInstance().getCurrentSchedule().getTickCount());
+        System.out.printf("[ArrivalScheduler] Tick %d processing %d pending arrivals%n", currentTick,
+                pendingArrivals.size());
         while (!pendingArrivals.isEmpty() && pendingArrivals.peek().getArrivalTick() <= currentTick) {
             VesselArrival arrival = pendingArrivals.poll();
             VesselAgent vessel = new VesselAgent(arrival.getVesselId(), arrival.getArrivalTick(),
