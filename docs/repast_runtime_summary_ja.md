@@ -94,13 +94,40 @@ java -cp "bin;${env:CLASSPATH_WIN}" `
 シナリオを実行します。`$(pwd)/test250930.rs` や `$(Get-Location)\test250930.rs` のように絶対パス
 を渡すことで、シナリオ内の `../bin` 参照が正しく解決されます。
 
-## 6. ログ出力と確認ポイント
+## 6. トラブルシューティング（よくあるエラー）
+
+### 6.1 `scenario.xml\user_path.xml` が見つからない
+
+`RepastBatchMain` / `BatchMain` に **シナリオファイル (`scenario.xml`) のパス** を渡した場合、
+ランタイムは `scenario.xml` をディレクトリとして扱おうとするため
+`scenario.xml\user_path.xml` を参照し、`指定されたパスが見つかりません` というエラーになります。
+必ず **シナリオディレクトリ** (`.../test250930.rs`) の絶対パスを引数に指定してください。
+
+```bash
+# ✅ 正しい例（Git Bash / MINGW64）
+java -cp "bin;${CLASSPATH_WIN}" \
+  repast.simphony.runtime.RepastBatchMain "$(pwd -W)\\test250930.rs"
+
+# ❌ 誤った例
+java -cp "bin;${CLASSPATH_WIN}" \
+  repast.simphony.runtime.RepastBatchMain ./test250930.rs/scenario.xml
+```
+
+### 6.2 `unknown plug-in ID - saf.core.runtime`
+
+GUI ランチャーである `repast.simphony.runtime.RepastMain` をヘッドレス環境（X サーバが無い環境）で
+起動すると、OSGi プラグインの初期化に失敗して上記のエラーが発生します。バッチ実行のみが
+目的の場合は、常に `repast.simphony.batch.BatchMain` または `repast.simphony.runtime.RepastBatchMain`
+を使用してください。これらは GUI を必要とせず、`launch.props` と `parameters.xml` を読み込んで
+シミュレーションを自動で進行します。
+
+## 7. ログ出力と確認ポイント
 
 `test250930.rs/launch.props` にはログ出力の設定があり、デフォルトで `console,file` が有効です。
 実行すると標準出力に各エージェントのイベントが記録され、`logs/` 配下に `.log` `.csv` `.json`
 が生成されます。これらは C++ 側の外洋シミュレーションとの同期や可視化に利用できます。
 
-## 7. 反復実行のためのヒント
+## 8. 反復実行のためのヒント
 
 - 同じコンテナセッション内であれば、セットアップ済みの `lib/repast-2.11.0/` を再利用できます。
 - スクリプトや Makefile を追加し、`setup → compile → run` を一括で呼び出すと反復検証が容易です。
