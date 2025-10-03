@@ -42,6 +42,47 @@ find src/test250930 -name "*.java" -print0 \
 The compiler will emit a warning about annotation processors being discovered on
 the classpath; it is safe to ignore for this workflow.
 
+### Alternative workflow for Windows development environments
+
+When running from Windows (for example via Git Bash or the Windows Subsystem for
+Linux) you can follow the same overall structure with a few platform-specific
+adjustments:
+
+1. Generate the Repast classpath as usual and convert it into the Windows
+   separator format (`;` instead of `:`):
+
+   ```bash
+   CLASSPATH=$(./scripts/repast_classpath.sh)
+   CLASSPATH_WIN=$(echo "$CLASSPATH" | tr ':' ';')
+   ```
+
+2. Compile the sources by passing the Windows-formatted classpath and writing the
+   results into a separate `bin/test250930` folder if you want to keep the
+   Windows build artifacts apart from the container ones:
+
+   ```bash
+   find src/test250930 -name "*.java" > sources.txt
+   javac -cp "$CLASSPATH_WIN" -d bin/test250930 @sources.txt
+   ```
+
+3. Launch the batch runner. `pwd -W` expands to a Windows absolute path in Git
+   Bash, which keeps Repast happy when it tries to resolve relative entries from
+   `user_path.xml`:
+
+   ```bash
+   java \
+     --add-opens java.base/java.lang=ALL-UNNAMED \
+     --add-opens java.base/java.lang.reflect=ALL-UNNAMED \
+     -cp "bin;$CLASSPATH_WIN" \
+     repast.simphony.runtime.RepastBatchMain \
+     -params "$(pwd -W)\\test250930.rs\\batch_params.xml" \
+     "$(pwd -W)\\test250930.rs"
+   ```
+
+The additional `--add-opens` flags mirror the container invocation so that the
+runtime can perform the reflective access it expects. Repast will then execute
+the same scenario as in the container without needing the Swing UI.
+
 ## 3. Execute the scenario in headless (batch) mode
 
 `RepastMain` launches the Swing-based UI and therefore throws a `HeadlessException`
