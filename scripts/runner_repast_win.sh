@@ -14,7 +14,7 @@ spinner() {
   while :; do
     printf "\r${spin_chars[i]} Running..."
     i=$(((i + 1) % 4))
-    sleep 0.2
+    sleep 0.1
   done
 }
 
