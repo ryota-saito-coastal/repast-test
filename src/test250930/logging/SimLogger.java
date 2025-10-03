@@ -33,6 +33,7 @@ public final class SimLogger {
 
     private static final DateTimeFormatter RUN_STAMP = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
     private static final Locale DEFAULT_LOCALE = Locale.ROOT;
+    private static final String LOG_DIRECTORY_OVERRIDE_PROPERTY = "test250930.logging.directory";
     private static final EnumSet<OutputMode> OUTPUTS;
     private static final Path LOG_DIRECTORY;
     private static final String RUN_ID;
@@ -118,14 +119,27 @@ public final class SimLogger {
     }
 
     private static Path resolveLogDirectory(String configuredDir) {
-        Path directory = Paths.get(Objects.requireNonNullElse(configuredDir, "logs"));
-        if (!directory.isAbsolute()) {
-            directory = configDirectory.resolve(directory).normalize();
-        }
+        Path directory = selectBaseDirectory(configuredDir);
         try {
             Files.createDirectories(directory);
         } catch (IOException ex) {
             throw new UncheckedIOException("Unable to create log directory " + directory, ex);
+        }
+        return directory;
+    }
+
+    private static Path selectBaseDirectory(String configuredDir) {
+        String override = System.getProperty(LOG_DIRECTORY_OVERRIDE_PROPERTY);
+        if (override != null && !override.isBlank()) {
+            Path overridePath = Paths.get(override.trim());
+            if (!overridePath.isAbsolute()) {
+                overridePath = configDirectory.resolve(overridePath).normalize();
+            }
+            return overridePath;
+        }
+        Path directory = Paths.get(Objects.requireNonNullElse(configuredDir, "logs"));
+        if (!directory.isAbsolute()) {
+            directory = configDirectory.resolve(directory).normalize();
         }
         return directory;
     }
