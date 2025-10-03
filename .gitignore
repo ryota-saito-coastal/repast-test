@@ -3,9 +3,8 @@ bin/*
 !bin/.gitkeep
 *.class
 
-# Repast runtime cache
+# Repast runtime cache (BatchMain)
 lib/
-
 
 # IDE configuration
 .classpath
